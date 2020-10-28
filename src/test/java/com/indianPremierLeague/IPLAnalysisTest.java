@@ -91,4 +91,19 @@ public class IPLAnalysisTest {
 		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
 		assertEquals("Andre Russell", iplCSV[0].playerName);
 	}
+
+	/**
+	 * StrikeRate using the fours and sixes data
+	 * 
+	 * @throws IOException
+	 * @throws CSVBuilderException
+	 */
+	@Test
+	public void givenRunsData_WhenSortedOnStrikeRateWithSixandFour_ShouldReturnTrue()
+			throws IOException, CSVBuilderException {
+		iPLAnalyser.loadDataOfRuns(MOST_RUNS);
+		String name = iPLAnalyser.getSortedDataOnStrikeRateOnSixAndFour();
+		assertEquals("Andre Russell", name);
+	}
+
 }
