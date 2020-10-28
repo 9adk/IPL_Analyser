@@ -49,6 +49,7 @@ public class IPLAnalysisTest {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * Sorting the data based on best batting average
 	 * 
@@ -61,6 +62,20 @@ public class IPLAnalysisTest {
 		String sortedCSVData = iPLAnalyser.getAverageWiseSortedData();
 		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
 		assertEquals(83.2, iplCSV[0].avg, 0.0);
+	}
+
+	/**
+	 * Sorting the data based on top Striking rate
+	 * 
+	 * @throws IOException
+	 * @throws CSVBuilderException
+	 */
+	@Test
+	public void givenRunsData_WhenSortedOnSR_ShouldReturnTrue() throws IOException, CSVBuilderException {
+		iPLAnalyser.loadDataOfRuns(MOST_RUNS);
+		String sortedCSVData = iPLAnalyser.getSRWiseSortedData();
+		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
+		assertEquals(333.33f, iplCSV[0].strikeRate, 0.0);
 	}
 
 }

@@ -53,5 +53,16 @@ public class IPLAnalyser {
 			}
 		}
 	}
+	/**
+	 * Usecase2 : finding top striking rate in the IPL 2019
+	 * 
+	 * @return
+	 */
+	public String getSRWiseSortedData() {
+		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.strikeRate);
+		this.sort(csvRunsList, iplCSVComparator);
+		String sorted = new Gson().toJson(csvRunsList);
+		return sorted;
+	}
 
 }
