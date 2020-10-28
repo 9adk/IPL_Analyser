@@ -3,6 +3,7 @@ package com.indianPremierLeague;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Comparator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -135,13 +136,33 @@ public class IPLAnalysisTest {
 		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
 		assertEquals("David Warner", iplCSV[0].playerName);
 	}
+
+	/**
+	 * Player with best bowling averages
+	 * 
+	 * @throws IOException
+	 * @throws CSVBuilderException
+	 */
 	@Test
-	public void givenWktsData_WhenSortedOnBowlingAvg_ShouldReturnTrue()
-			throws IOException, CSVBuilderException {
+	public void givenWktsData_WhenSortedOnBowlingAvg_ShouldReturnTrue() throws IOException, CSVBuilderException {
 		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
 		String sortedCSVData = iPLAnalyser.getSortedOnBowlingAvg();
 		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
 		assertEquals("Anukul Roy", iplCSV[0].playerName);
 	}
-	
+
+	/**
+	 * Player with best striking rate
+	 * 
+	 * @throws IOException
+	 * @throws CSVBuilderException
+	 */
+	@Test
+	public void givenWktsData_WhenSortedOnBowlingStrikeRate_ShouldReturnTrue() throws IOException, CSVBuilderException {
+		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
+		String sortedCSVData = iPLAnalyser.getSortedOnBowlingStrikeRate();
+		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
+		assertEquals("Alzarri Joseph", iplCSV[0].playerName);
+	}
+
 }

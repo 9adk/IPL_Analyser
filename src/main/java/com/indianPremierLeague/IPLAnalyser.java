@@ -1,13 +1,11 @@
 package com.indianPremierLeague;
 
-
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
-
 
 import com.CSVReader.CSVBuilderException;
 import com.CSVReader.CSVBuilderFactory;
@@ -130,13 +128,30 @@ public class IPLAnalyser {
 		return sorted;
 	}
 
+	/**
+	 * Usecase7 : Finding Bowler with best bowling average in IPL2019
+	 * 
+	 * @return
+	 */
 	public String getSortedOnBowlingAvg() {
 		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg);
 		this.sortForBowling(csvWktsList, iplCSVComparator);
 		String sorted = new Gson().toJson(csvWktsList);
 		return sorted;
 	}
-	
+
+	/**
+	 * Usecase8 : Finding Bowler with best striking rate in IPL2019
+	 * 
+	 * @return
+	 */
+	public String getSortedOnBowlingStrikeRate() {
+		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.strikeRate);
+		this.sortForBowling(csvWktsList, iplCSVComparator);
+		String sorted = new Gson().toJson(csvWktsList);
+		return sorted;
+	}
+
 	private <E> void sortForBowling(List<MostWktsCSV> csvList, Comparator<MostWktsCSV> iplCSVComparator) {
 		for (int i = 0; i < csvList.size(); i++) {
 			for (int j = 0; j < csvList.size() - i - 1; j++) {
