@@ -78,4 +78,17 @@ public class IPLAnalysisTest {
 		assertEquals(333.33f, iplCSV[0].strikeRate, 0.0);
 	}
 
+	/**
+	 * TestCase for player with maximum no of fours and sixes
+	 * 
+	 * @throws IOException
+	 * @throws CSVBuilderException
+	 */
+	@Test
+	public void givenRunsData_WhenSortedOn4sand6s_ShouldReturnTrue() throws IOException, CSVBuilderException {
+		iPLAnalyser.loadDataOfRuns(MOST_RUNS);
+		String sortedCSVData = iPLAnalyser.getSortedDataOnNoOfFoursAndSixes();
+		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
+		assertEquals("Andre Russell", iplCSV[0].playerName);
+	}
 }
