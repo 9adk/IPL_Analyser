@@ -165,4 +165,17 @@ public class IPLAnalysisTest {
 		assertEquals("Alzarri Joseph", iplCSV[0].playerName);
 	}
 
+	/**
+	 * Player with good economy
+	 * 
+	 * @throws IOException
+	 * @throws CSVBuilderException
+	 */
+	@Test
+	public void givenWktsData_WhenSortedOnBowlingEconomy_ShouldReturnTrue() throws IOException, CSVBuilderException {
+		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
+		String sortedCSVData = iPLAnalyser.getSortedOnBowlingEconomy();
+		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
+		assertEquals("Shivam Dube", iplCSV[0].playerName);
+	}
 }

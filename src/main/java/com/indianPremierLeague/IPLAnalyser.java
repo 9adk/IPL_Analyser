@@ -152,6 +152,19 @@ public class IPLAnalyser {
 		return sorted;
 	}
 
+	/**
+	 * Usecase9 : Finding Bowler with good economy
+	 * 
+	 * @return
+	 */
+	public String getSortedOnBowlingEconomy() {
+		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.economy,
+				Comparator.reverseOrder());
+		this.sort(csvWktsList, iplCSVComparator);
+		String sorted = new Gson().toJson(csvWktsList);
+		return sorted;
+	}
+
 	private <E> void sortForBowling(List<MostWktsCSV> csvList, Comparator<MostWktsCSV> iplCSVComparator) {
 		for (int i = 0; i < csvList.size(); i++) {
 			for (int j = 0; j < csvList.size() - i - 1; j++) {
