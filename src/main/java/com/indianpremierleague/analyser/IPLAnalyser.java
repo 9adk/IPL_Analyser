@@ -105,7 +105,7 @@ public class IPLAnalyser {
 		double maxSR = 0;
 		double tempSR = 0;
 		for (int i = 0; i < csvRunsList.size(); i++) {
-			temp = (csvRunsList.get(i).noOfFours*4 + csvRunsList.get(i).noOfSixes*6);
+			temp = (csvRunsList.get(i).noOfFours * 4 + csvRunsList.get(i).noOfSixes * 6);
 			tempSR = temp / csvRunsList.get(i).bF;
 			if (temp > max && tempSR > maxSR) {
 				max = temp;
@@ -232,20 +232,25 @@ public class IPLAnalyser {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getSortedOnBestBattingAndBowlingAvg() {
-		List<MostRunsCSV> battingList = (ArrayList<MostRunsCSV>) new Gson().fromJson(this.getAverageWiseSortedData(),new TypeToken<ArrayList<MostRunsCSV>>() {}.getType());
-		List<MostWktsCSV> bowlingList = (ArrayList<MostWktsCSV>) new Gson().fromJson(this.getSortedOnBowlingAvg(),new TypeToken<ArrayList<MostWktsCSV>>() {}.getType());
-		return this.forAllRounder(battingList,bowlingList);	
+		List<MostRunsCSV> battingList = (ArrayList<MostRunsCSV>) new Gson().fromJson(this.getAverageWiseSortedData(),
+				new TypeToken<ArrayList<MostRunsCSV>>() {
+				}.getType());
+		List<MostWktsCSV> bowlingList = (ArrayList<MostWktsCSV>) new Gson().fromJson(this.getSortedOnBowlingAvg(),
+				new TypeToken<ArrayList<MostWktsCSV>>() {
+				}.getType());
+		return this.forAllRounder(battingList, bowlingList);
 	}
-	
+
 	/**
 	 * Usecase14: Finding best all rounder
 	 * 
 	 * @return
 	 */
 	public List<String> getSortedOnMaxRunsAndWkts() {
-		List<MostRunsCSV> runsList = this.sort(csvRunsList, Comparator.comparing(entry->entry.runs)).stream().limit(50).collect(Collectors.toList());
-		List<MostWktsCSV> wicketsList = this.sort(csvWktsList, Comparator.comparing(entry->entry.wickets));
-		return this.forAllRounder(runsList,wicketsList);	
+		List<MostRunsCSV> runsList = this.sort(csvRunsList, Comparator.comparing(entry -> entry.runs)).stream()
+				.limit(50).collect(Collectors.toList());
+		List<MostWktsCSV> wicketsList = this.sort(csvWktsList, Comparator.comparing(entry -> entry.wickets));
+		return this.forAllRounder(runsList, wicketsList);
 	}
 
 	private List<String> forAllRounder(List<MostRunsCSV> runsList, List<MostWktsCSV> wicketsList) {
@@ -259,16 +264,29 @@ public class IPLAnalyser {
 		}
 		return playerList;
 	}
+
 	/**
 	 * Usecase15: Player with max hundreds and best averages
 	 * 
 	 * @return
 	 */
 	public List<MostRunsCSV> getSortedOnMaxHundredsAndBattingAverage() {
-		csvRunsList.removeIf(entry -> entry.noOfHundreds == 0 );
+		csvRunsList.removeIf(entry -> entry.noOfHundreds == 0);
 		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.noOfHundreds);
 		List<MostRunsCSV> tempList = this.sort(csvRunsList, iplCSVComparator);
 		this.sort(tempList, Comparator.comparing(entry -> entry.avg));
 		return tempList;
+	}
+
+	/**
+	 * Usecase16 : Player with zero hundreds but with best averages
+	 * 
+	 * @return
+	 */
+	public List<MostRunsCSV> getSortedOnZeroCenturiesAndBestBattingAvg() {
+		csvRunsList.removeIf(entry -> (entry.noOfHundreds + entry.noOfFifties) != 0);
+		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg);
+		this.sort(csvRunsList, iplCSVComparator);
+		return csvRunsList;
 	}
 }
