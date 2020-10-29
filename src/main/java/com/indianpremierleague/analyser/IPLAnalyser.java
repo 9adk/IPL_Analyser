@@ -11,23 +11,37 @@ import com.CSVReader.CSVBuilderException;
 import com.CSVReader.CSVBuilderFactory;
 import com.CSVReader.ICSVBuilder;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class IPLAnalyser {
 	List<MostRunsCSV> csvRunsList = null;
 	List<MostWktsCSV> csvWktsList = null;
 
-	public int loadDataOfRuns(String CSVFile) throws IOException, CSVBuilderException {
-		Reader reader = Files.newBufferedReader(Paths.get(CSVFile));
-		ICSVBuilder<MostRunsCSV> csvBuilder = CSVBuilderFactory.createCSVBuilder();
-		csvRunsList = csvBuilder.getCSVFileList(reader, MostRunsCSV.class);
-		return csvRunsList.size();
+	public int loadDataOfRuns(String CSVFile) throws IOException, CSVBuilderException, IPLAnalyserException {
+		try {
+			Reader reader = Files.newBufferedReader(Paths.get(CSVFile));
+			ICSVBuilder<MostRunsCSV> csvBuilder = CSVBuilderFactory.createCSVBuilder();
+			csvRunsList = csvBuilder.getCSVFileList(reader, MostRunsCSV.class);
+			return csvRunsList.size();
+		} catch (CSVBuilderException exception) {
+			throw new IPLAnalyserException(exception.getMessage(), IPLAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+		} catch (IOException exception) {
+			throw new IPLAnalyserException(exception.getMessage(), IPLAnalyserException.ExceptionType.INCORRECT_FILE);
+		}
+
 	}
 
-	public int loadDataOfWickets(String CSVFile) throws IOException, CSVBuilderException {
-		Reader reader = Files.newBufferedReader(Paths.get(CSVFile));
-		ICSVBuilder<MostWktsCSV> csvBuilder = CSVBuilderFactory.createCSVBuilder();
-		csvWktsList = csvBuilder.getCSVFileList(reader, MostWktsCSV.class);
-		return csvWktsList.size();
+	public int loadDataOfWickets(String CSVFile) throws IOException, CSVBuilderException, IPLAnalyserException {
+		try {
+			Reader reader = Files.newBufferedReader(Paths.get(CSVFile));
+			ICSVBuilder<MostWktsCSV> csvBuilder = CSVBuilderFactory.createCSVBuilder();
+			csvWktsList = csvBuilder.getCSVFileList(reader, MostWktsCSV.class);
+			return csvWktsList.size();
+		} catch (CSVBuilderException exception) {
+			throw new IPLAnalyserException(exception.getMessage(), IPLAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+		} catch (IOException exception) {
+			throw new IPLAnalyserException(exception.getMessage(), IPLAnalyserException.ExceptionType.INCORRECT_FILE);
+		}
 	}
 
 	/**
@@ -36,7 +50,7 @@ public class IPLAnalyser {
 	 * @return
 	 */
 	public String getAverageWiseSortedData() {
-		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg);	
+		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg);
 		return new Gson().toJson(this.sort(csvRunsList, iplCSVComparator));
 	}
 
@@ -97,7 +111,7 @@ public class IPLAnalyser {
 				max = temp;
 				maxSR = tempSR;
 				name = csvRunsList.get(i).playerName;
-				
+
 			}
 		}
 		return name;
@@ -111,11 +125,10 @@ public class IPLAnalyser {
 	public String getSortedOnAverageAndStrikeRate() {
 		this.sort(csvRunsList, Comparator.comparing(entry -> entry.avg));
 		List<MostRunsCSV> tempList = this.sort(csvRunsList.stream().limit(10).collect(Collectors.toList()),
-										Comparator.comparing(entry -> entry.strikeRate));
+				Comparator.comparing(entry -> entry.strikeRate));
 		String sorted = new Gson().toJson(tempList);
 		return sorted;
 	}
-
 
 	/**
 	 * Usecase6 : Finding BatsMan with max runs and best average in IPL2019
@@ -125,7 +138,7 @@ public class IPLAnalyser {
 	public String getSortedOnMaxRunsAndStrikeRate() {
 		this.sort(csvRunsList, Comparator.comparing(entry -> entry.runs));
 		List<MostRunsCSV> tempList = this.sort(csvRunsList.stream().limit(10).collect(Collectors.toList()),
-										Comparator.comparing(entry -> entry.strikeRate));
+				Comparator.comparing(entry -> entry.strikeRate));
 		String sorted = new Gson().toJson(tempList);
 		return sorted;
 	}
@@ -137,7 +150,7 @@ public class IPLAnalyser {
 	 */
 	public String getSortedOnBowlingAvg() {
 		csvWktsList.removeIf(entry -> entry.avg == 0);
-		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg,Comparator.reverseOrder());
+		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg, Comparator.reverseOrder());
 		this.sort(csvWktsList, iplCSVComparator);
 		String sorted = new Gson().toJson(csvWktsList);
 		return sorted;
@@ -150,7 +163,8 @@ public class IPLAnalyser {
 	 */
 	public String getSortedOnBowlingStrikeRate() {
 		csvWktsList.removeIf(entry -> entry.avg == 0);
-		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.strikeRate,Comparator.reverseOrder());
+		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.strikeRate,
+				Comparator.reverseOrder());
 		this.sort(csvWktsList, iplCSVComparator);
 		String sorted = new Gson().toJson(csvWktsList);
 		return sorted;
@@ -162,7 +176,8 @@ public class IPLAnalyser {
 	 * @return
 	 */
 	public String getSortedOnBowlingEconomy() {
-		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.economy,Comparator.reverseOrder());
+		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.economy,
+				Comparator.reverseOrder());
 		this.sort(csvWktsList, iplCSVComparator);
 		String sorted = new Gson().toJson(csvWktsList);
 		return sorted;
@@ -173,9 +188,9 @@ public class IPLAnalyser {
 	 * 
 	 * @return
 	 */
-	public String getSortedOnStrikeRateAnd4wOr5w() {		
-		csvWktsList.removeIf(entry -> entry.strikeRate == 0 ||entry.fourWkts == 0 && entry.fiveWkts == 0);
-		this.sort(csvWktsList, Comparator.comparing((entry -> entry.strikeRate),Comparator.reverseOrder()));
+	public String getSortedOnStrikeRateAnd4wOr5w() {
+		csvWktsList.removeIf(entry -> entry.strikeRate == 0 || entry.fourWkts == 0 && entry.fiveWkts == 0);
+		this.sort(csvWktsList, Comparator.comparing((entry -> entry.strikeRate), Comparator.reverseOrder()));
 		String sorted = new Gson().toJson(csvWktsList);
 		return sorted;
 	}
@@ -188,21 +203,49 @@ public class IPLAnalyser {
 	public String getSortedOnBowlingAvgAndStrikeRate() {
 		csvWktsList.removeIf(entry -> entry.avg == 0);
 		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg, Comparator.reverseOrder());
-		List<MostWktsCSV> tempList = this.sort(csvWktsList, iplCSVComparator).stream().limit(10).collect(Collectors.toList());
-		this.sort(tempList,  Comparator.comparing(entry -> entry.strikeRate,Comparator.reverseOrder()));
+		List<MostWktsCSV> tempList = this.sort(csvWktsList, iplCSVComparator).stream().limit(10)
+				.collect(Collectors.toList());
+		this.sort(tempList, Comparator.comparing(entry -> entry.strikeRate, Comparator.reverseOrder()));
 		String sorted = new Gson().toJson(tempList);
 		return sorted;
 	}
 
-	/**Usecase12 : Bowler with max wickets and best bowling average 
+	/**
+	 * Usecase12 : Bowler with max wickets and best bowling average
+	 * 
 	 * @return
 	 */
 	public String getSortedOnMaxWicketsAndBowlingAvg() {
 		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.wickets);
-		List<MostWktsCSV> tempList = this.sort(csvWktsList, iplCSVComparator).stream().limit(20).collect(Collectors.toList());
-		this.sort(tempList,  Comparator.comparing(entry -> entry.avg,Comparator.reverseOrder()));
+		List<MostWktsCSV> tempList = this.sort(csvWktsList, iplCSVComparator).stream().limit(20)
+				.collect(Collectors.toList());
+		this.sort(tempList, Comparator.comparing(entry -> entry.avg, Comparator.reverseOrder()));
 		String sorted = new Gson().toJson(tempList);
 		return sorted;
-		
+
+	}
+
+	/**
+	 * Usecase13 : Players with best bowling and batting average
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> getSortedOnBestBattingAndBowlingAvg() {
+		List<MostRunsCSV> battingList = (ArrayList<MostRunsCSV>) new Gson().fromJson(this.getAverageWiseSortedData(),
+				new TypeToken<ArrayList<MostRunsCSV>>() {
+				}.getType());
+		List<MostWktsCSV> bowlingList = (ArrayList<MostWktsCSV>) new Gson().fromJson(this.getSortedOnBowlingAvg(),
+				new TypeToken<ArrayList<MostWktsCSV>>() {
+				}.getType());
+		List<String> playerList = new ArrayList<>();
+		for (MostRunsCSV bat : battingList) {
+			for (MostWktsCSV bowl : bowlingList) {
+				if (bat.playerName.equals(bowl.playerName)) {
+					playerList.add(bat.playerName);
+				}
+			}
+		}
+		return playerList;
 	}
 }
