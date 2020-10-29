@@ -190,8 +190,9 @@ public class IPLAnalysisTest {
 	public void givenWktsData_WhenSortedOnStrikeRateAnd4wOR5w_ShouldReturnTrue()
 			throws IOException, CSVBuilderException {
 		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
-		String playerName = iPLAnalyser.getSortedOnStrikeRateAnd4wOr5w();
-		assertEquals("Alzarri Joseph", playerName);
+		String sortedCSVData = iPLAnalyser.getSortedOnStrikeRateAnd4wOr5w();
+		MostWktsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostWktsCSV[].class);
+		assertEquals("Alzarri Joseph", iplCSV[0].playerName);
 	}
 
 	/**
