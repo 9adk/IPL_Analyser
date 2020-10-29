@@ -259,5 +259,16 @@ public class IPLAnalyser {
 		}
 		return playerList;
 	}
-	
+	/**
+	 * Usecase15: Player with max hundreds and best averages
+	 * 
+	 * @return
+	 */
+	public List<MostRunsCSV> getSortedOnMaxHundredsAndBattingAverage() {
+		csvRunsList.removeIf(entry -> entry.noOfHundreds == 0 );
+		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.noOfHundreds);
+		List<MostRunsCSV> tempList = this.sort(csvRunsList, iplCSVComparator);
+		this.sort(tempList, Comparator.comparing(entry -> entry.avg));
+		return tempList;
+	}
 }

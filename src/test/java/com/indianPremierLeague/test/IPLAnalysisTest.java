@@ -286,4 +286,22 @@ public class IPLAnalysisTest {
 
 	}
 
+	/**
+	 * Finding player with max hundreds and best averages
+	 * 
+	 * @throws IOException
+	 * @throws CSVBuilderException
+	 * @throws IPLAnalyserException
+	 */
+	@Test
+	public void givenWktsData_WhenSortedOnMaxHundredsAndBattingAverage_ShouldReturnTrue()
+			throws IOException, CSVBuilderException, IPLAnalyserException {
+		iPLAnalyser.loadDataOfRuns(MOST_RUNS);
+		List<MostRunsCSV> sortedCSVData = iPLAnalyser.getSortedOnMaxHundredsAndBattingAverage();
+		assertEquals("David Warner", sortedCSVData.get(0).playerName);
+		assertEquals("Jonny Bairstow", sortedCSVData.get(1).playerName);
+
+	}
+	
+	
 }
