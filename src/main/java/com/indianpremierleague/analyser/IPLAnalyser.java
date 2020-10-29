@@ -193,4 +193,16 @@ public class IPLAnalyser {
 		String sorted = new Gson().toJson(tempList);
 		return sorted;
 	}
+
+	/**Usecase12 : Bowler with max wickets and best bowling average 
+	 * @return
+	 */
+	public String getSortedOnMaxWicketsAndBowlingAvg() {
+		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.wickets);
+		List<MostWktsCSV> tempList = this.sort(csvWktsList, iplCSVComparator).stream().limit(20).collect(Collectors.toList());
+		this.sort(tempList,  Comparator.comparing(entry -> entry.avg,Comparator.reverseOrder()));
+		String sorted = new Gson().toJson(tempList);
+		return sorted;
+		
+	}
 }

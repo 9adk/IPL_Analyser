@@ -209,4 +209,16 @@ public class IPLAnalysisTest {
 		MostWktsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostWktsCSV[].class);
 		assertEquals("Alzarri Joseph", iplCSV[0].playerName);
 	}
+	
+	@Test
+	public void givenWktsData_WhenSortedOnMaxWicketsAndBowlingAvg_ShouldReturnTrue()
+			throws IOException, CSVBuilderException {
+		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
+		String sortedCSVData = iPLAnalyser.getSortedOnMaxWicketsAndBowlingAvg();
+		MostWktsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostWktsCSV[].class);
+		assertEquals("Kagiso Rabada", iplCSV[0].playerName);
+		assertEquals("Khaleel Ahmed", iplCSV[1].playerName);
+
+	}
+	
 }

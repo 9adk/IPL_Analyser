@@ -12,6 +12,8 @@ public class MostRunsCSV {
 	public int notOut;	
 	@CsvBindByName(column = "Runs")
 	public int runs;
+	@CsvBindByName(column = "HS")
+	public String highestScore;
 	@CsvBindByName(column = "Avg")
 	public double avg;
 	@CsvBindByName(column = "BF")
