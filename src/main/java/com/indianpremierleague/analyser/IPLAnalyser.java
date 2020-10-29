@@ -1,12 +1,11 @@
-package com.indianPremierLeague;
+package com.indianpremierleague.analyser;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.*;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import com.CSVReader.CSVBuilderException;
 import com.CSVReader.CSVBuilderFactory;
@@ -37,13 +36,11 @@ public class IPLAnalyser {
 	 * @return
 	 */
 	public String getAverageWiseSortedData() {
-		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg);
-		this.sort(csvRunsList, iplCSVComparator);
-		String sorted = new Gson().toJson(csvRunsList);
-		return sorted;
+		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg);	
+		return new Gson().toJson(this.sort(csvRunsList, iplCSVComparator));
 	}
 
-	private <E> void sort(List<E> csvList, Comparator<E> iplCSVComparator) {
+	private <E> List<E> sort(List<E> csvList, Comparator<E> iplCSVComparator) {
 		for (int i = 0; i < csvList.size(); i++) {
 			for (int j = 0; j < csvList.size() - i - 1; j++) {
 				E player1 = csvList.get(j);
@@ -54,6 +51,7 @@ public class IPLAnalyser {
 				}
 			}
 		}
+		return csvList;
 	}
 
 	/**
@@ -101,7 +99,6 @@ public class IPLAnalyser {
 				name = csvRunsList.get(i).playerName;
 			}
 		}
-		System.out.println(name);
 		return name;
 	}
 
@@ -111,11 +108,13 @@ public class IPLAnalyser {
 	 * @return
 	 */
 	public String getSortedOnAverageAndStrikeRate() {
-		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg);
-		this.sort(csvRunsList, iplCSVComparator.thenComparing(entry -> entry.strikeRate));
-		String sorted = new Gson().toJson(csvRunsList);
+		this.sort(csvRunsList, Comparator.comparing(entry -> entry.avg));
+		List<MostRunsCSV> tempList = this.sort(csvRunsList.stream().limit(10).collect(Collectors.toList()),
+										Comparator.comparing(entry -> entry.strikeRate));
+		String sorted = new Gson().toJson(tempList);
 		return sorted;
 	}
+
 
 	/**
 	 * Usecase6 : Finding BatsMan with max runs and best average in IPL2019
@@ -123,9 +122,10 @@ public class IPLAnalyser {
 	 * @return
 	 */
 	public String getSortedOnMaxRunsAndStrikeRate() {
-		Comparator<MostRunsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.runs);
-		this.sort(csvRunsList, iplCSVComparator.thenComparing(entry -> entry.avg));
-		String sorted = new Gson().toJson(csvRunsList);
+		this.sort(csvRunsList, Comparator.comparing(entry -> entry.runs));
+		List<MostRunsCSV> tempList = this.sort(csvRunsList.stream().limit(10).collect(Collectors.toList()),
+										Comparator.comparing(entry -> entry.strikeRate));
+		String sorted = new Gson().toJson(tempList);
 		return sorted;
 	}
 
@@ -171,23 +171,32 @@ public class IPLAnalyser {
 	 * 
 	 * @return
 	 */
-	public String getSortedOnStrikeRateAnd4wOr5w() {
+	public String getSortedOnStrikeRateAnd4wOr5w() {		
 		double tempSR = 0;
 		TreeMap<Double, String> csvMap = new TreeMap<>();
-		for(int i = 0; i < csvWktsList.size(); i++ ) {
+		for (int i = 0; i < csvWktsList.size(); i++) {
 			int temp = csvWktsList.get(i).fourWkts * 4 + csvWktsList.get(i).fiveWkts * 5;
-			if(temp > 0) {
-				tempSR = ((Math.round(csvWktsList.get(i).over)*6 + ((csvWktsList.get(i).over*10)%10)))/temp;
+			if (temp > 0) {
+				tempSR = ((Math.round(csvWktsList.get(i).over) * 6 + ((csvWktsList.get(i).over * 10) % 10))) / temp;
 				csvMap.put(tempSR, csvWktsList.get(i).playerName);
 			}
 		}
-		for(Map.Entry<Double, String> entry : csvMap.entrySet()) {
-			System.out.println(entry.getKey()+" "+ entry.getValue());
-		}
-		return (String)csvMap.values().toArray()[0];
+		return (String) csvMap.values().toArray()[0];
 	}
 
-	private <E> void sortForBowling(List<MostWktsCSV> csvList, Comparator<MostWktsCSV> iplCSVComparator) {
+	/**
+	 * Usecase11 : Bowler with great averages and best striking rate
+	 * 
+	 * @return
+	 */
+	public String getSortedOnBowlingAvgAndStrikeRate() {
+		Comparator<MostWktsCSV> iplCSVComparator = Comparator.comparing(entry -> entry.avg);
+		List<MostWktsCSV> tempList = this.sortForBowling(csvWktsList, iplCSVComparator).stream().limit(10).collect(Collectors.toList());
+		this.sortForBowling(tempList,  Comparator.comparing(entry -> entry.strikeRate));
+		String sorted = new Gson().toJson(tempList);
+		return sorted;
+	}
+	private List<MostWktsCSV> sortForBowling(List<MostWktsCSV> csvList, Comparator<MostWktsCSV> iplCSVComparator) {
 		for (int i = 0; i < csvList.size(); i++) {
 			for (int j = 0; j < csvList.size() - i - 1; j++) {
 				MostWktsCSV player1 = csvList.get(j);
@@ -198,5 +207,6 @@ public class IPLAnalyser {
 				}
 			}
 		}
+		return csvList;
 	}
 }

@@ -1,4 +1,4 @@
-package com.indianPremierLeague;
+package com.indianPremierLeague.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.CSVReader.CSVBuilderException;
 import com.google.gson.Gson;
+import com.indianpremierleague.analyser.*;
 
 public class IPLAnalysisTest {
 	IPLAnalyser iPLAnalyser;
@@ -119,7 +120,7 @@ public class IPLAnalysisTest {
 		iPLAnalyser.loadDataOfRuns(MOST_RUNS);
 		String sortedCSVData = iPLAnalyser.getSortedOnAverageAndStrikeRate();
 		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
-		assertEquals("MS Dhoni", iplCSV[0].playerName);
+		assertEquals("Andre Russell", iplCSV[0].playerName);
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class IPLAnalysisTest {
 		iPLAnalyser.loadDataOfRuns(MOST_RUNS);
 		String sortedCSVData = iPLAnalyser.getSortedOnMaxRunsAndStrikeRate();
 		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
-		assertEquals("David Warner", iplCSV[0].playerName);
+		assertEquals("Andre Russell", iplCSV[0].playerName);
 	}
 
 	/**
@@ -147,7 +148,7 @@ public class IPLAnalysisTest {
 	public void givenWktsData_WhenSortedOnBowlingAvg_ShouldReturnTrue() throws IOException, CSVBuilderException {
 		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
 		String sortedCSVData = iPLAnalyser.getSortedOnBowlingAvg();
-		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
+		MostWktsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostWktsCSV[].class);
 		assertEquals("Anukul Roy", iplCSV[0].playerName);
 	}
 
@@ -161,7 +162,7 @@ public class IPLAnalysisTest {
 	public void givenWktsData_WhenSortedOnBowlingStrikeRate_ShouldReturnTrue() throws IOException, CSVBuilderException {
 		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
 		String sortedCSVData = iPLAnalyser.getSortedOnBowlingStrikeRate();
-		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
+		MostWktsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostWktsCSV[].class);
 		assertEquals("Alzarri Joseph", iplCSV[0].playerName);
 	}
 
@@ -175,14 +176,36 @@ public class IPLAnalysisTest {
 	public void givenWktsData_WhenSortedOnBowlingEconomy_ShouldReturnTrue() throws IOException, CSVBuilderException {
 		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
 		String sortedCSVData = iPLAnalyser.getSortedOnBowlingEconomy();
-		MostRunsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostRunsCSV[].class);
+		MostWktsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostWktsCSV[].class);
 		assertEquals("Shivam Dube", iplCSV[0].playerName);
 	}
-	
+
+	/**
+	 * Player with strike rate with 4w and 5w
+	 * 
+	 * @throws IOException
+	 * @throws CSVBuilderException
+	 */
 	@Test
-	public void givenWktsData_WhenSortedOnStrikeRateAnd4wOR5w_ShouldReturnTrue() throws IOException, CSVBuilderException {
+	public void givenWktsData_WhenSortedOnStrikeRateAnd4wOR5w_ShouldReturnTrue()
+			throws IOException, CSVBuilderException {
 		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
-		String sortedCSVData = iPLAnalyser.getSortedOnStrikeRateAnd4wOr5w();
-		assertEquals("Alzarri Joseph", sortedCSVData);
+		String playerName = iPLAnalyser.getSortedOnStrikeRateAnd4wOr5w();
+		assertEquals("Alzarri Joseph", playerName);
+	}
+
+	/**
+	 * Player with best average and great strike rate
+	 * 
+	 * @throws IOException
+	 * @throws CSVBuilderException
+	 */
+	@Test
+	public void givenWktsData_WhenSortedOnBowlingAvgAndStrikeRate_ShouldReturnTrue()
+			throws IOException, CSVBuilderException {
+		iPLAnalyser.loadDataOfWickets(MOST_WKTS);
+		String sortedCSVData = iPLAnalyser.getSortedOnBowlingAvgAndStrikeRate();
+		MostWktsCSV[] iplCSV = new Gson().fromJson(sortedCSVData, MostWktsCSV[].class);
+		assertEquals("Alzarri Joseph", iplCSV[0].playerName);
 	}
 }

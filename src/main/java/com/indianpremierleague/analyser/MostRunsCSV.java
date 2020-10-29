@@ -1,4 +1,4 @@
-package com.indianPremierLeague;
+package com.indianpremierleague.analyser;
 import com.opencsv.bean.CsvBindByName;
 
 public class MostRunsCSV {
