@@ -105,7 +105,7 @@ public class IPLAnalyser {
 		double maxSR = 0;
 		double tempSR = 0;
 		for (int i = 0; i < csvRunsList.size(); i++) {
-			temp = (csvRunsList.get(i).noOfFours + csvRunsList.get(i).noOfSixes);
+			temp = (csvRunsList.get(i).noOfFours*4 + csvRunsList.get(i).noOfSixes*6);
 			tempSR = temp / csvRunsList.get(i).bF;
 			if (temp > max && tempSR > maxSR) {
 				max = temp;
@@ -232,15 +232,26 @@ public class IPLAnalyser {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getSortedOnBestBattingAndBowlingAvg() {
-		List<MostRunsCSV> battingList = (ArrayList<MostRunsCSV>) new Gson().fromJson(this.getAverageWiseSortedData(),
-				new TypeToken<ArrayList<MostRunsCSV>>() {
-				}.getType());
-		List<MostWktsCSV> bowlingList = (ArrayList<MostWktsCSV>) new Gson().fromJson(this.getSortedOnBowlingAvg(),
-				new TypeToken<ArrayList<MostWktsCSV>>() {
-				}.getType());
+		List<MostRunsCSV> battingList = (ArrayList<MostRunsCSV>) new Gson().fromJson(this.getAverageWiseSortedData(),new TypeToken<ArrayList<MostRunsCSV>>() {}.getType());
+		List<MostWktsCSV> bowlingList = (ArrayList<MostWktsCSV>) new Gson().fromJson(this.getSortedOnBowlingAvg(),new TypeToken<ArrayList<MostWktsCSV>>() {}.getType());
+		return this.forAllRounder(battingList,bowlingList);	
+	}
+	
+	/**
+	 * Usecase14: Finding best all rounder
+	 * 
+	 * @return
+	 */
+	public List<String> getSortedOnMaxRunsAndWkts() {
+		List<MostRunsCSV> runsList = this.sort(csvRunsList, Comparator.comparing(entry->entry.runs)).stream().limit(50).collect(Collectors.toList());
+		List<MostWktsCSV> wicketsList = this.sort(csvWktsList, Comparator.comparing(entry->entry.wickets));
+		return this.forAllRounder(runsList,wicketsList);	
+	}
+
+	private List<String> forAllRounder(List<MostRunsCSV> runsList, List<MostWktsCSV> wicketsList) {
 		List<String> playerList = new ArrayList<>();
-		for (MostRunsCSV bat : battingList) {
-			for (MostWktsCSV bowl : bowlingList) {
+		for (MostRunsCSV bat : runsList) {
+			for (MostWktsCSV bowl : wicketsList) {
 				if (bat.playerName.equals(bowl.playerName)) {
 					playerList.add(bat.playerName);
 				}
@@ -248,4 +259,5 @@ public class IPLAnalyser {
 		}
 		return playerList;
 	}
+	
 }
